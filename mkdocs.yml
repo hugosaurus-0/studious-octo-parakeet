@@ -1,0 +1,9 @@
+site_name: Community Wiki
+site_description: A community-maintained wiki
+site_author: Your Name
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - Contributing: contributing.md
