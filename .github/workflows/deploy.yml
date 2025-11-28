@@ -5,43 +5,39 @@ permissions:
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]  # deploy whenever main is updated
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository with full history
+      # Step 1: Checkout the repo
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # needed to push to gh-pages
 
-      # Step 2: Setup Python
+      # Step 2: Set up Python
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      # Step 3: Install MkDocs and theme
+      # Step 3: Install MkDocs
       - run: pip install mkdocs mkdocs-material
 
       # Step 4: Build the site
       - run: mkdocs build
 
-      # Step 5: Deploy to gh-pages branch
-      - name: Deploy site to gh-pages
+      # Step 5: Push site to gh-pages
+      - name: Deploy to gh-pages
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          # Create or switch to gh-pages branch
           git checkout -B gh-pages
-          # Remove old files
           git rm -rf . || echo "Nothing to remove"
-          # Copy the built site
           cp -r site/* .
           git add .
           git commit -m "Deploy MkDocs site" || echo "No changes to commit"
-          # Force push to GitHub
           git push origin gh-pages --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
